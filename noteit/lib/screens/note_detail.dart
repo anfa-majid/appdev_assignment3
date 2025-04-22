@@ -40,7 +40,7 @@ void showNoteDetailSheet(BuildContext context, Note note) {
 
             const SizedBox(height: 14),
 
-            if (note.imagePaths.isNotEmpty) ...[
+            if (note.imagePaths != null && note.imagePaths.isNotEmpty) ...[
               Wrap(
                 spacing: 10,
                 runSpacing: 10,
