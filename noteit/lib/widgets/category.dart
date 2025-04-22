@@ -28,26 +28,24 @@ class Category extends StatelessWidget {
         final selected = state.selectedCategory;
 
         return Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12),
-          height: 44,
+          padding: const EdgeInsets.symmetric(horizontal: 8),
           decoration: BoxDecoration(
+            border: Border.all(color: Colors.black),
+            borderRadius: BorderRadius.circular(10),
             color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            border: Border.all(color: Colors.black, width: 1.5),
           ),
           child: DropdownButtonHideUnderline(
             child: DropdownButton<NoteCategory?>(
               value: selected,
+              isDense: true,
               isExpanded: true,
-              onChanged: (value) {
-                context.read<NoteBloc>().add(FilterNotesByCategory(value));
-              },
               icon: const Icon(Icons.arrow_drop_down, color: Colors.black),
               dropdownColor: Colors.white,
               borderRadius: BorderRadius.circular(12),
               style: const TextStyle(
                 color: Colors.black,
                 fontSize: 14,
+                fontWeight: FontWeight.w500,
               ),
               items: categories.map((cat) {
                 return DropdownMenuItem<NoteCategory?>(
@@ -55,6 +53,9 @@ class Category extends StatelessWidget {
                   child: Text(displayCategoryText(cat)),
                 );
               }).toList(),
+              onChanged: (value) {
+                context.read<NoteBloc>().add(FilterNotesByCategory(value));
+              },
             ),
           ),
         );

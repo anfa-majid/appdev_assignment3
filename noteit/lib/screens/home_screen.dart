@@ -16,6 +16,7 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: const Color(0xFFF9F4FF),
         elevation: 0,
+        centerTitle: false,
         title: const Text(
           "NoteIt",
           style: TextStyle(
@@ -27,8 +28,12 @@ class HomeScreen extends StatelessWidget {
         actions: const [
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 12),
-            child: Category(),
-          )
+            child: SizedBox(
+              height: 40,
+              width: 100,
+              child: Category(),
+            ),
+          ),
         ],
       ),
       body: BlocBuilder<NoteBloc, NoteState>(
@@ -70,7 +75,7 @@ class HomeScreen extends StatelessWidget {
             MaterialPageRoute(builder: (_) => const AddNoteScreen()),
           );
         },
-        backgroundColor: const Color.fromARGB(255, 249, 178, 202),
+        backgroundColor: Colors.pink.shade200,
         child: const Icon(Icons.add, color: Colors.black),
       ),
     );

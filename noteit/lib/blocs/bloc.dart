@@ -7,33 +7,53 @@ import 'state.dart';
 class NoteBloc extends Bloc<NoteEvent, NoteState> {
   final Box<Note> noteBox = Hive.box<Note>('notes');
 
-  NoteBloc() : super(NoteState(notes: [])) {
-     on<LoadNotes>((event, emit) {
+  NoteBloc()
+      : super(NoteState(
+          notes: [],
+          filteredNotes: [],
+        )) {
+    on<LoadNotes>((event, emit) {
       final notes = noteBox.values.toList();
-      print("Hive Loaded Notes: ${notes.map((n) => n.title).toList()}"); 
-      emit(state.copyWith(notes: notes));
-    });
+      final currentCategory = state.selectedCategory;
 
+      final filtered = currentCategory == null
+          ? notes
+          : notes.where((n) => n.category == currentCategory).toList();
+      filtered.sort((a, b) => (b.isPinned ? 1 : 0).compareTo(a.isPinned ? 1 : 0));
+
+      emit(state.copyWith(
+        notes: notes,
+        filteredNotes: filtered,
+      ));
+    });
 
     on<AddNote>((event, emit) {
       noteBox.put(event.note.id, event.note);
-      print("Note Added to Hive: ${event.note.title}");
       add(LoadNotes());
     });
 
-
     on<DeleteNote>((event, emit) {
       noteBox.delete(event.id);
-      emit(state.copyWith(notes: noteBox.values.toList()));
+      add(LoadNotes());
     });
 
     on<UpdateNote>((event, emit) {
       noteBox.put(event.note.id, event.note);
-      emit(state.copyWith(notes: noteBox.values.toList()));
+      add(LoadNotes());
     });
 
     on<FilterNotesByCategory>((event, emit) {
-      emit(state.copyWith(selectedCategory: event.category));
+      final newCategory = event.category;
+
+      final filtered = newCategory == null
+          ? state.notes
+          : state.notes.where((n) => n.category == newCategory).toList();
+      filtered.sort((a, b) => (b.isPinned ? 1 : 0).compareTo(a.isPinned ? 1 : 0));
+
+      emit(state.copyWith(
+        selectedCategory: newCategory,
+        filteredNotes: filtered,
+      ));
     });
   }
 }
